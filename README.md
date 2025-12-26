@@ -13,4 +13,4 @@ The topics present currently are:
 5. **Design-Patterns** - for mapping out different design patterns under creational, structural, and behavioral. (EMPTY)
 
 
-As the project evolves, I might add more folders eventually :D
+I might add more folders eventually :D
