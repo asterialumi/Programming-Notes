@@ -1,4 +1,4 @@
-#include "Tree/BinaryTree.hpp"
+#include "Specialized/BinaryTree.hpp"
 #include <iostream>
 #include <vector>
 using namespace std;
