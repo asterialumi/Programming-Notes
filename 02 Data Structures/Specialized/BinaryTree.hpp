@@ -145,8 +145,8 @@ private:
         Node* parent = find_parent(root, node);
 
         if(!parent) root = nullptr;
-        else if (parent->left == node) parent->left = nullptr;
-        else if (parent->right == node) parent->right = nullptr;
+        else if(parent->left == node) parent->left = nullptr;
+        else if(parent->right == node) parent->right = nullptr;
 
         delete node;
         return;
