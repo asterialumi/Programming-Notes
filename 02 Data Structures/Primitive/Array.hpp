@@ -1,8 +1,6 @@
-#include <iostream>
-#include <cmath>
-using namespace std;
-
 #pragma once
+#include <iostream>
+using namespace std;
 
 class Array {
 public:
@@ -33,7 +31,7 @@ public:
     //REMOVE FUNCTIONS
     void remove() {
         if(size == 0) return; //throw-->EmptyContainer
-        array[size--] = 0;
+        array[--size] = 0;
     }
 
     void removeAt(int index) {
@@ -58,20 +56,18 @@ public:
 
     //DISPLAY FUNCTIONS
     void display() {
+        cout << "[";
         for(int i = 0; i < capacity; i++) {
-            cout << "[";
-
             if(i < size) cout << array[i];
             else cout << "_";
-            
-            cout << "]";
-            if(i+1 < capacity) cout << ", ";
+            if(i+1 < capacity) cout << ",";
         }
+        cout << "]";
     }
     // void display(int start) {}
     // void display(int start, int end) {}
 
-    // //SPECIAL FUNCTIONS
+    //SPECIAL FUNCTIONS
     void set(int index, int value) {
         if(index < 0 || index >= size) return; //throw-->OutOfBounds
         array[index] = value;
@@ -107,7 +103,7 @@ private:
     int allocations;
 
     void grow(float factor) {
-        capacity = capacity == 0 ? ceil(factor) : ceil(capacity * factor);
+        capacity = capacity == 0 ? 1: capacity * 1.5;
         array = allocate(array, capacity);
         allocations++;
     }

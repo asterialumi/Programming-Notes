@@ -1,9 +1,8 @@
+#pragma once
 #include <unordered_map>
 #include <queue>
 #include <iostream>
 using namespace std;
-
-#pragma once
 
 // NEEDS EDIT
 class Tree {
