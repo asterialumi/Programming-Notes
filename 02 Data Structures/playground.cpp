@@ -1,9 +1,43 @@
 #include "Specialized/BinaryTree.hpp"
+#include "Primitive/Array.hpp"
 #include <iostream>
 #include <vector>
 using namespace std;
 
+void ds_array();
+void ds_binary_tree();
+
 int main() {
+    ds_array();
+    return 0;
+}
+
+void ds_array() {
+    Array* a = new Array();
+    char choice;
+    int n, i;
+    bool proceed = true;
+
+    do {
+        cout << "Op: ";
+        cin >> choice;
+        switch(choice) {
+            case('a'): cin >> n; a->add(n); break;
+            case('r'): a->remove(); break;
+            case('A'): cin >> i; cin >> n; a->addAt(i,n); break;
+            case('R'): cin >> i; a->removeAt(i); break;
+            case('g'): cout << "# of allocs: " << a->getAllocations() << endl; break;
+            case('p'): a->display(); cout << endl; break;
+            case('q'): proceed = false; break;
+            case('c'): cin >> n; a->reserve(n); break;
+            case('s'): cin >> n; a->resize(n); break;
+            case('d'): cin >> n; a->reduce(n); break;
+            default: cout << "invalid." << endl; break;
+        }
+    } while(proceed);
+}
+
+void ds_binary_tree() {
     BinaryTree* tree1 = new BinaryTree();
     BinaryTree* tree2 = new BinaryTree();
     BinaryTree* tree3 = new BinaryTree();
@@ -82,5 +116,4 @@ int main() {
                 break;
         }
     }while(cont);
-    return 0;
 }
