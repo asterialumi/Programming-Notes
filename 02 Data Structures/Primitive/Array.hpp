@@ -14,18 +14,14 @@ public:
 
     void addAt(int index, int value) {
         if(index < 0 || index >= size) return; //throw OutOfBounds
-        if(size == capacity) grow(1.5);
+        if(size == capacity) grow(1.6);
 
-        int shift = array[index];
-        array[index] = value;
-
-        for(int i = index + 1; i < size; i++) {
-            int hold = array[i];
-            array[i] = shift;
-            shift = hold;
+        for(int i = size; i > index; i--) {
+            array[i] = array[i-1];
         }
 
-        array[size++] = shift;
+        array[index] = value;
+        size++;
     }
 
     //REMOVE FUNCTIONS
@@ -52,14 +48,12 @@ public:
     
     int getSize() { return size; }
     int getCapacity() { return capacity;}
-    int getAllocations() { return allocations; }
 
     //DISPLAY FUNCTIONS
     void display() {
         cout << "[";
-        for(int i = 0; i < capacity; i++) {
-            if(i < size) cout << array[i];
-            else cout << "_";
+        for(int i = 0; i < size; i++) {
+            cout << array[i];
             if(i+1 < capacity) cout << ",";
         }
         cout << "]";
@@ -73,25 +67,44 @@ public:
         array[index] = value;
     }
 
-    void resize(int amount) {
-        if(size + amount > capacity) return; //throw-->LengthOverflow
-
-        for(int i = 0; i < amount; i++) {
+    void expand(int elements) {
+        if(size + elements > capacity) reserve(size + elements + 2);
+        
+        for(int i = 0; i < elements; i++) {
             array[i + size] = 0;
         }
 
-        size += amount;
+        size += elements;
+    }
+
+    void resize(int elements) {
+        if(elements < 0) return; //throw-->InvalidAmount
+        if(elements > capacity) reserve(elements + 2);
+
+        for(int i = size - 1; i < elements; i++) {
+            array[i] = 0;
+        }
+
+        for(int i = elements - 1; i < size; i++) {
+            array[i] = 0;
+        }
+
+        size = elements;
     }
     
-    void reserve(int amount) {
-        capacity += amount;
+    void reserve(int memory) {
+        if(memory < capacity) return; //throw-->InvalidAmount
+
+        capacity = memory;
         array = allocate(array, capacity);
         allocations++;
     }
 
-    void reduce(int amount) {
-        if(capacity - amount < size) return; //throw-->LengthUnderflow
-        capacity -= amount;
+    void reduce(int memory) {
+        if(memory < size) return; //throw-->LengthUnderflow
+        if(memory > capacity) return; //throw-->InvalidAmount
+        
+        capacity = memory;
         array = allocate(array, capacity);
         allocations++;
     }
