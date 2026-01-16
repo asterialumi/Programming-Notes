@@ -4,7 +4,7 @@ using namespace std;
 
 class Stack {
 public:
-    Graph() {}
+    Stack() {}
 
     //INSERT FUNCTIONS
 
@@ -14,7 +14,7 @@ public:
 
     //DISPLAY FUNCTIONS
 
-    //SPECIAL FUNCTIONS
+    //UNIQUE FUNCTIONS
 
 private:
     

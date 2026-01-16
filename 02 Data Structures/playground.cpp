@@ -22,16 +22,22 @@ void ds_array() {
         cout << "Op: ";
         cin >> choice;
         switch(choice) {
-            case('a'): cin >> n; a->add(n); break;
+            case('a'): cin >> n; a->insert(n); break;
             case('r'): a->remove(); break;
-            case('A'): cin >> i; cin >> n; a->addAt(i,n); break;
-            case('R'): cin >> i; a->removeAt(i); break;
-            case('g'): cout << "# of allocs: " << a->getAllocations() << endl; break;
+            case('A'): cin >> i; cin >> n; a->insert(i,n); break;
+            case('R'): cin >> i; a->remove(i); break;
+            case('l'): a->clear(); break;
+            case('f'): cout << a->first() << endl; break;
+            case('b'): cout << a->last() << endl; break;
             case('p'): a->display(); cout << endl; break;
+            case('u'): a->status(); break;
             case('q'): proceed = false; break;
+            case('e'): cin >> n; a->expand(n); break;
+            case('E'): cin >> n; cin >> i; a->expand(n,i); break;
+            case('s'): cin >> n; a->erase(n); break;
+            case('S'): cin >> i; cin >> n; a->erase(i,n); break;
             case('c'): cin >> n; a->reserve(n); break;
-            case('s'): cin >> n; a->resize(n); break;
-            case('d'): cin >> n; a->reduce(n); break;
+            case('z'): cin >> n; a->resize(n); break;
             default: cout << "invalid." << endl; break;
         }
     } while(proceed);
