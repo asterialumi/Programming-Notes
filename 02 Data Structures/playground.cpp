@@ -30,7 +30,7 @@ void ds_array() {
             case('f'): cout << a->first() << endl; break;
             case('b'): cout << a->last() << endl; break;
             case('p'): a->display(); cout << endl; break;
-            case('u'): a->status(); break;
+            //case('u'): a->status(); break;
             case('q'): proceed = false; break;
             case('e'): cin >> n; a->expand(n); break;
             case('E'): cin >> n; cin >> i; a->expand(n,i); break;
