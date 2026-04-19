@@ -156,6 +156,11 @@ class SplayTree {
         node *x = curr, *y = x->parent, *z = y->parent;
         node* right = x->right;
         
+        y->parent = x;
+        x->right = y;
+        y->left = right;
+        if(right) right->parent = y;
+        
         if(z) {
             y == z->right ?
             z->right = x : z->left = x;
@@ -165,11 +170,6 @@ class SplayTree {
             root = x;
             x->parent = NULL;
         }
-        
-        y->parent = x;
-        x->right = y;
-        y->left = right;
-        if(right) right->parent = y;
     }
 
     // GIVEN the child (or x), find the parent (or y), and the grandparent if any (or z).
