@@ -13,16 +13,12 @@ class SplayTree {
     int size;
 
     node* create_node(int num, node* parent) {
-        node* n = (node*) malloc( sizeof(node) );
-        n->element = num;
-        n->parent = parent;
-        n->right = NULL;
-        n->left = NULL;
+        node* n = new node{parent, nullptr, nullptr, num};
         return n;
     }
 
     bool search(node* curr, int num) {
-        if (curr == NULL) {
+        if (!curr) {
             return false;
         }
         if (num == curr->element) {
@@ -41,12 +37,12 @@ class SplayTree {
         }
 
         if (num < curr->element) {
-            if (curr->left != NULL) {
+            if (curr->left) {
                 return search_node(curr->left, num);
             }
             return curr;
         }
-        if (curr->right != NULL) {
+        if (curr->right) {
             return search_node(curr->right, num);
         }
         return curr;
@@ -91,83 +87,41 @@ class SplayTree {
     }
 
     bool remove(int num) {
-      if (isEmpty()) {
-        return false;
-      }
-      node* rem_node = search_node(root, num);
-      if (rem_node->element != num) {
-        return false;
-      }
+        if (isEmpty()) return false;
+        node* rem_node = search_node(root, num);
 
-      // FIND the number of children.
-      int children = 0;
-      // 0 - no children
-      // -1 - left child only
-      // 1 - right child only
-      // 2 - both children
-      if (rem_node->right) {
-        children = 1;
-      }
-      if (rem_node->left) {
-        if (children == 1) {
-          children = 2;
-        } else {
-          children = -1;
-        }
-      }
+        if (rem_node->element != num) return false;
 
-      if (children == 0) { // NO CHILDREN
-        node* parent = rem_node->parent;
-        if (!parent) {
-          root = NULL;
-        } else {
-          if (rem_node == parent->left) {
-            parent->left = NULL;
-          } else {
-            parent->right = NULL;
-          }
-          //splay(parent);
-        }
+        //1. splay the node to root
+        splay(rem_node);
 
-        free(rem_node);
+        //2. save left and right subtree and disconnect
+        node* left = rem_node->left;
+        node* right = rem_node->right;
+        if(left) left->parent = nullptr;
+        if(right) right->parent = nullptr;
+
+        //3. delete rem_node
+        delete rem_node;
         size--;
-      } else if (children == -1 || children == 1) { // ONE CHILD
-        node* parent = rem_node->parent;
-        node* child;
-        if (children == -1) {
-          child = rem_node->left;
-        } else {
-          child = rem_node->right;
-        }
 
-        child->parent = parent;
-        if (!parent) {
-          root = child;
-        } else {
-          if (parent->left == rem_node) {
-            parent->left = child;
-          } else {
-            parent->right = child;
-          }
-          //splay(parent);
+        //4. find successor (leftmost of right subtree)
+        if(!right) {
+            root = left;
+            return true;
         }
+        root = right;
+        node* successor = right;
+        while(successor->left) successor = successor->left;
 
-        free(rem_node);
-        size--;
-      } else { // TWO CHILDREN
-        node* right_st = rem_node->right;
-        while (right_st->left != NULL) {
-          right_st = right_st->left;
-        }
+        //5. splay successor
+        splay(successor);
+        root->left = left;
+        if(left) left->parent = root;
 
-        int temp = right_st->element;
-        remove(temp);
-        rem_node->element = temp;
-      }
-      return true;
+        return true;
     }
 
-    // TODO implementation of rotate operation of x where
     //  |
     //  y
     //   \
@@ -193,7 +147,6 @@ class SplayTree {
         }
     }
 
-    // TODO implementation of rotate operation of x where
     //   |
     //   y
     //  /
@@ -222,16 +175,16 @@ class SplayTree {
     // GIVEN the child (or x), find the parent (or y), and the grandparent if any (or z).
     // Splay the child to the root recursively or iteratively.
     void restructure(node* child) {
-        node* par; // parent
+        node* par;
         par = child->parent;
-        // This is an indicator of the placement of parent to child (ptoc)
+
         bool ptoc_right = false;
         if (par->right == child) {
             ptoc_right = true;
         }
 
         node* gp;
-        // TODO find grandparent. If gp does not exist, proceed to doing ZIGLEFT or ZIGRIGHT.
+        // If gp does not exist, proceed to doing ZIGLEFT or ZIGRIGHT.
         gp = par->parent;
         if(!gp) {
             if(ptoc_right) {
@@ -243,7 +196,7 @@ class SplayTree {
             }
             return;
         }
-        // This is an indicator of the placement of grandparent to parent (gtop)
+
         bool gtop_right = false;
         if (gp->right == par) {
             gtop_right = true;
@@ -252,57 +205,54 @@ class SplayTree {
         // FOR THE FOLLOWING: Write in each of the if statements a console output
         // on its corresponding operation (ZIGZIGLEFT, ZIGZIGRIGHT, ZIGZAGLEFT, or ZIGZAGRIGHT)
 
-      // z
-      //  \
-      //   y
-      //    \
-      //     x
-      if (gtop_right && ptoc_right) {
-        // TODO call to either zigleft or zigright or both
+        // z
+        //  \
+        //   y
+        //    \
+        //     x
+        if (gtop_right && ptoc_right) {
         cout << "ZIGZIGLEFT" << endl;
         zigleft(par);
         zigleft(child);
-      }
+        }
 
-      // z
-      //   \
-      //     y
-      //    /
-      //   x
-      else if (gtop_right && !ptoc_right) {
-        // TODO call to either zigleft or zigright or both
+        // z
+        //   \
+        //     y
+        //    /
+        //   x
+        else if (gtop_right && !ptoc_right) {
         cout << "ZIGZAGLEFT" << endl;
         zigright(child);
         zigleft(child);
-      }
+        }
 
-      //     z
-      //    /
-      //   y
-      //  /
-      // x
-      else if (!gtop_right && !ptoc_right) {
-        // TODO call to either zigleft or zigright or both
+        //     z
+        //    /
+        //   y
+        //  /
+        // x
+        else if (!gtop_right && !ptoc_right) {
         cout << "ZIGZIGRIGHT" << endl;
         zigright(par);
         zigright(child);
-      }
+        }
 
-      //      z
-      //    /
-      //  y
-      //   \
-      //    x
-      else {
-        // TODO call to either zigleft or zigright or both
+        //      z
+        //    /
+        //  y
+        //   \
+        //    x
+        else {
         cout << "ZIGZAGRIGHT" << endl;
         zigleft(child);
         zigright(child);
-      }
+        }
 
-      return;
+        return;
     }
 
+    //FOR DEBUGGING
     void print() {
         if (isEmpty()) {
             cout << "EMPTY" << endl;
